@@ -52,7 +52,6 @@ jQuery().ready(function(){
 		};
 		nav.querySelectorAll("a").map(function(elem){
 			elem.addEventListener("click", function(event){
-				nav.togglePosition();
 				transition(elem.getAttribute("href"));
 			}, false);
 		});
@@ -62,6 +61,10 @@ jQuery().ready(function(){
 	
 	/* TRANSITION */
 		var transition = function(id){
+			if(id.match("article")){
+				id = "#" + id.substr(1, id.length).split("#").shift();
+			}	
+
 			var out = document.querySelector(".out");
 			if(out){
 				out.classList.remove("smooth");
@@ -76,9 +79,14 @@ jQuery().ready(function(){
 			current.classList.add("smooth");
 			current.classList.remove("current");
 			current.classList.add("out");
-			current.classList.add(nav.classList.contains("right") ? "right" : "left");
+			current.classList.add(nav.classList.contains("right") ? "left" : "right");
 
-			current = document.querySelector(id);
+			var newCurrent = document.querySelector(id);
+			if(newCurrent !== current){
+				nav.togglePosition();
+				current = newCurrent;
+			}	
+
 			current.classList.add("current");
 			current.classList.remove("out");
 			current.classList.remove("smooth");
@@ -88,7 +96,7 @@ jQuery().ready(function(){
 			current.scrollTop = current.getAttribute("scrollTop") || 0;
 		}
 
-	/* HOME */
+	/* GUI */
 		OGRE.GUI = (function(){
 			var _sections = OGRE.TOOLS.Team();
 			
@@ -118,18 +126,18 @@ jQuery().ready(function(){
 					},
 					open : function(){
 						console.log(_elements);
-						console.log("INJECT ELEMENTS INTO SECTION detail");
-						nav.togglePosition();
-						transition("#detail");
+						console.log("INJECT ELEMENTS INTO SECTION ARTICLE");
+						transition(this.getAttribute("href"));
 					},
 					load : function(){
 						var self = this;
 						this.nodeHTML = document.createElement("li");
-						
-						this.nodeHTML.addEventListener("click", this.open, false);
+						this.nodeHTML.appendChild(document.createElement("a"));
+						this.nodeHTML.children[0].href = "#article#"+name;
+						this.nodeHTML.children[0].addEventListener("click", this.open, false);
 
-						this.section.querySelector("ul").appendChild(this.nodeHTML)
-						return OGRE.TOOLS.easyloader([this.section.name, name, this.elements[0].name, ""].join("/"), this.nodeHTML);
+						this.section.querySelector("ul").appendChild(this.nodeHTML);
+						return OGRE.TOOLS.easyloader([this.section.name, name, this.elements[0].name, ""].join("/"), this.nodeHTML.children[0], 500*300);
 					}
 				}
 			};
@@ -202,5 +210,10 @@ jQuery().ready(function(){
 			OGRE.GUI.articles.current.section.addEventListener("scroll", smartloader, false);
 			window.addEventListener("resize", smartloader, false);
 		});
+
+	/* HASH */
+		if(window.location.hash.match("#")){
+			transition(window.location.hash);
+		}
 	});
 });
