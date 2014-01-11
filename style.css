@@ -1,0 +1,169 @@
+html, body, .current, .out{
+	margin: 0;
+	padding:0;
+	width: 100%;
+}
+body{
+	height: 100%;
+	background-color: #fff;
+}
+
+/* ANIMATION */
+	.smooth{
+		transition-property: all;
+		transition-duration: 1.2s;
+		transition-timing-function: linear;
+		transition-delay: initial;
+
+		-webkit-transition-property: all;
+		-webkit-transition-duration: 1.2s;
+		-webkit-transition-timing-function: linear;
+		-webkit-transition-delay: initial;
+
+		-moz-transition-property: all;
+		-moz-transition-duration: 1.2s;
+		-moz-transition-timing-function: linear;
+		-moz-transition-delay: initial;
+
+		-o-transition-property: all;
+		-o-transition-duration: 1.2s;
+		-o-transition-timing-function: linear;
+		-o-transition-delay: initial;
+	}
+
+/* OUT & CURRENT */
+	.current, .out{
+		padding: 20px 30px;
+		position: absolute;
+	}
+/* CURRENT */
+
+/* OUT */
+	.out.left{
+		left: -100%;
+		position : fixed;
+	}
+
+	.out.right{
+		left: 100%;
+		position : fixed;
+	}
+
+/* NAV */
+	#nav{
+		z-index: 3;
+		position: fixed;
+		top: 0;
+		height: 100%;
+		width: 35px;
+	}
+	#nav.left{
+		left: 0;
+	}
+	#nav.right{
+		left: 100%;
+	}
+	#nav.right ul{
+		margin-left: -30px;
+	}
+
+	#nav li{
+		margin-top: -20px;
+		
+		transform: rotate(90deg);
+		transform-origin:bottom left;
+
+		-o-transform: rotate(90deg);
+		-o-transform-origin:bottom left;
+		
+		-ms-transform: rotate(90deg);
+		-ms-transform-origin:bottom left;
+		
+		-moz-transform: rotate(90deg);
+		-moz-transform-origin:bottom left;
+
+		-webkit-transform: rotate(90deg);
+		-webkit-transform-origin:bottom left;
+	}
+	#nav ul{
+		height: 100%;
+		margin-left: 10px;
+	}
+	#nav ul:after
+	{
+		display: block;
+	    content: " ";
+	    clear: both; /* if you need to break floating elements */
+	}
+
+/* HOME */
+	#home{
+		overflow-y: auto;
+		background-color: #fff;
+		height: 100%;
+	}
+	#home ul{
+		margin: 5px;
+	}
+	#home ul:after
+	{
+		display: block;
+	    content: " ";
+	    clear: both; /* if you need to break floating elements */
+	}
+	#home li{
+		/*/background-color: #000;/*/
+		width: 500px;
+		height: 300px;
+		margin: 10px;
+		float : left;
+	}
+
+	@media (max-width: 580px){
+		#home li{
+			width: 100%;
+			margin: 5px 0;
+		}
+	}
+
+/* DETAIL */
+	#detail{
+		overflow-y: auto;
+		background-color: #fff;
+		height: 100%;
+	}
+/* ARCHIVE */
+	#archive{
+		overflow-y: auto;
+		background-color: #fff;
+		height: 100%;
+	}
+	#archive ul{
+		margin: 5px;
+	}
+	#archive ul:after
+	{
+		display: block;
+	    content: " ";
+	    clear: both; /* if you need to break floating elements */
+	}
+	#archive li{
+		width: 500px;
+		height: 300px;
+		margin: 10px;
+		float : left;
+	}
+
+	@media (max-width: 580px){
+		#archive li{
+			width: 100%;
+			margin: 5px 0;
+		}
+	}
+
+/* ABOUT */
+	#about{
+		overflow-y: auto;
+		background-color: #fff;
+		height: 100%;
+	}
