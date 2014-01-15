@@ -1,10 +1,18 @@
+
 jQuery().ready(function(){
-	
 	console.log("jQuery is ready");
+	/* *********************** *\
+	\*                         */
+	/*       INIT OGRE         *\
+	\* *********************** */
+	
 	OGRE().ready(function(G){
 		console.log("OGRE is ready");
-		
-	/* RESPONSIVE VERTICAL ROW */
+
+	/* *********************** *\
+	\*                         */
+	/* RESPONSIVE VERTICAL ROW *\
+	\* *********************** */
 		document.querySelectorAll('[class*="ogre-row-"]').map(function(elem){
 			elem.classList.map(function(className){
 				if(className.match("ogre-row-offset")){
@@ -28,7 +36,10 @@ jQuery().ready(function(){
 			});
 		});
 
-	/* RESPONSIVE ANIMATION */
+	/* *********************** *\
+	\*                         */
+	/*   RESPONSIVE ANIMATION  *\
+	\* *********************** */
 		document.querySelectorAll('.anim').map(function(elem){
 			var setSpeed = function(){
 				var d = window.innerWidth;
@@ -42,8 +53,11 @@ jQuery().ready(function(){
 			window.addEventListener("resize", setSpeed, false);
 			setSpeed();
 		});
-
-	/* NAV */
+	
+	/* *********************** *\
+	\* NAV                     */
+	/* ANIMATION + INTERACTION *\
+	\* *********************** */
 		var nav = document.querySelector("#nav");
 		nav.togglePosition = function(){
 			this.classList.toggle("right");
@@ -56,10 +70,11 @@ jQuery().ready(function(){
 			}, false);
 		});
 
-	/* CURRENT */
+	/* *********************** *\
+	\* CHANGE CURRENT PAGE     */
+	/* ANIMATION               *\
+	\* *********************** */
 		var current = document.querySelector(".current");
-	
-	/* TRANSITION */
 		var transition = function(id){
 			if(id.match("article")){
 				id = "#" + id.substr(1, id.length).split("#").shift();
@@ -94,9 +109,12 @@ jQuery().ready(function(){
 			current.classList.remove("left");
 			current.classList.remove("hide");
 			current.scrollTop = current.getAttribute("scrollTop") || 0;
-		}
+		};	
 
-	/* GUI */
+	/* *********************** *\
+	\* CONTENT ORGANISATION    */
+	/* GUI                     *\
+	\* *********************** */
 		OGRE.GUI = (function(){
 			var _sections = OGRE.TOOLS.Team();
 			
@@ -178,7 +196,10 @@ jQuery().ready(function(){
 			}
 		})();
 
-	/* LOAD ARTICLES */
+	/* *********************** *\
+	\* LOAD ARTICLES           */
+	/*                         *\
+	\* *********************** */
 		OGRE.TOOLS.getFiles("home/", function(files){
 			var sectionName = Array.prototype.slice.call(files).first().first();
 			Array.prototype.slice.call(files).map(function(file){
@@ -211,7 +232,11 @@ jQuery().ready(function(){
 			window.addEventListener("resize", smartloader, false);
 		});
 
-	/* HASH */
+
+	/* *********************** *\
+	\* HASH REDIRECTION        */
+	/*                         *\
+	\* *********************** */
 		if(window.location.hash.match("#")){
 			transition(window.location.hash);
 		}
