@@ -99,6 +99,7 @@ body{
 /* HOME */
 	#home{
 		overflow-y: auto;
+		overflow-x: hidden;
 		background-color: #fff;
 		height: 100%;
 	}
@@ -119,6 +120,24 @@ body{
 		float : left;
 	}
 
+	#home a {
+		overflow: hidden;
+	}
+
+	#home a ul{
+		margin: 0;
+		padding: 0;
+	}
+	
+	#home a li{
+		/*/background-color: #000;/*/
+		width: 500px;
+		height: 300px;
+		margin: 0;
+		padding: 0;
+		float : left;
+	}
+
 	@media (max-width: 580px){
 		#home li{
 			width: 100%;
@@ -129,12 +148,14 @@ body{
 /* ARTICLE */
 	#article{
 		overflow-y: auto;
+		overflow-x: hidden;
 		background-color: #fff;
 		height: 100%;
 	}
 /* ARCHIVE */
 	#archive{
 		overflow-y: auto;
+		overflow-x: hidden;
 		background-color: #fff;
 		height: 100%;
 	}
@@ -151,6 +172,20 @@ body{
 		width: 500px;
 		height: 300px;
 		margin: 10px;
+		float : left;
+	}
+	#archive a {
+		overflow: hidden;
+	}
+	#archive a ul{
+		margin: 0;
+		padding: 0;
+	}
+	#archive a li{
+		width: 500px;
+		height: 300px;
+		margin: 0;
+		padding: 0;
 		float : left;
 	}
 

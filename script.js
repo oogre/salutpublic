@@ -116,67 +116,68 @@ jQuery().ready(function(){
 	/* GUI                     *\
 	\* *********************** */
 		OGRE.GUI = (function(){
-			var _sections = OGRE.TOOLS.Team();
+			var _sections = [];
 			
 			var Section = function(name){
 				var self = document.querySelector("#" + name); 
-				self.articles = OGRE.TOOLS.Team(),
+				self.articles = [],
 				self.name = name;
-				self.initArticle = function(name){
-					return this.articles.get(name) || this.articles.add(new Article(self, name)).last();
+				self.initArticle = function(rawArticle, onclick){
+					this.articles.push(new Article(self, rawArticle, onclick));
+					return this.articles.last();
+				}
+				self.dispatchRequestArticle = function(article){
+					this.dispatchEvent(new CustomEvent("requestarticle", {
+						detail: article.current
+					}));
 				}
 				return self;
 			};
 
-			var Article = function(parent, name){
-				var _elements = OGRE.TOOLS.Team();
-				var _title = name.split("_").pop();
-				var _date = name.split("_").shift();
-				return {
-					nodeHTML : null,
-					section : parent,
-					title : _title,
-					date : _date,
-					elements : _elements,
-					name : name,
-					initElement : function(name){
-						return this.elements.get(name) || this.elements.add(new Element(this, name)).last();
-					},
-					open : function(){
-						console.log(_elements);
-						console.log("INJECT ELEMENTS INTO SECTION ARTICLE");
-						transition(this.getAttribute("href"));
-					},
-					load : function(){
-						var self = this;
-						this.nodeHTML = document.createElement("li");
-						this.nodeHTML.appendChild(document.createElement("a"));
-						this.nodeHTML.children[0].href = "#article#"+name;
-						this.nodeHTML.children[0].addEventListener("click", this.open, false);
-
-						this.section.querySelector("ul").appendChild(this.nodeHTML);
-						return OGRE.TOOLS.easyloader([this.section.name, name, this.elements[0].name, ""].join("/"), this.nodeHTML.children[0], 500*300);
+			var Article = function(parent, rawArticle, onclick){
+				var self = document.createElement("li");
+				self.parent = parent;
+				self.name = rawArticle.name;
+				self.title = rawArticle.title;
+				self.date = rawArticle.date;
+				self.appendChild(document.createElement("a"));
+				self.children[0].href = "#article#"+self.name;
+				self.children[0].addEventListener("click", onclick, false);
+				self.children[0].appendChild(document.createElement("ul"));
+				parent.querySelector("ul").appendChild(self);
+				
+				self.elements = [];
+				for(var name in rawArticle.content){
+					var content = rawArticle.content[name];
+					self.elements.push(new Element(self, name, content));
+				}
+				self.elements = new OGRE.TOOLS.Iterator(self.elements);
+				self.elements.current.initItem();
+				self.loadElements = function(){
+					while(self.elements.hasNext()){
+						self.elements.next().current.initItem();
 					}
 				}
+				return self;
 			};
 
-			var Element = function(parent, name){
-				var _items = OGRE.TOOLS.Team();
+			var Element = function(parent, name, content){
+				var self = document.createElement("li");
+				self.appendChild(document.createElement("a"));
+				parent.children[0].style.width= "100%";
+				parent.children[0].style.height= "100%";
+				parent.children[0].style.display= "block";
+				parent.children[0].children[0].appendChild(self);
+				parent.children[0].children[0].style.width = parent.children[0].children[0].children.length * 100 + "%";
+				content = content.map(function(c){
+					return parent.parent.name + "/"+parent.name+"/"+name+"/"+c;
+				})
 				return {
 					article : parent,
-					item : _items,
 					name : name,
 					initItem : function(name){
-						return _items.get(name) || _items.add(new Item(this, name)).last();
+						OGRE.TOOLS.easyloader(self.children[0], content, 500*300);
 					}
-				}
-			};
-
-			var Item = function(parent, name){
-				var _items = OGRE.TOOLS.Team();
-				return {
-					element : parent,
-					name : name
 				}
 			};
 
@@ -186,12 +187,8 @@ jQuery().ready(function(){
 
 			return {
 				sections : _sections,
-				addContent : function(content){
-					var sectionName = content.shift();
-					var articleName = content.shift();
-					var elementName = content.shift();
-					var itemName = content.shift();
-					_initSection(sectionName).initArticle(articleName).initElement(elementName).initItem(itemName);
+				createSection : function(name){
+					return new Section(name);
 				}
 			}
 		})();
@@ -200,35 +197,55 @@ jQuery().ready(function(){
 	\* LOAD ARTICLES           */
 	/*                         *\
 	\* *********************** */
-		OGRE.TOOLS.getFiles("home/", function(files){
-			var sectionName = Array.prototype.slice.call(files).first().first();
-			Array.prototype.slice.call(files).map(function(file){
-				OGRE.GUI.addContent(file);
-			});
-			var articles = OGRE.GUI.sections.get(sectionName).articles.reverse();
-		
-			OGRE.GUI.articles = new OGRE.TOOLS.Iterator(articles);
+
+		OGRE.DATA = {};
+		OGRE.TOOLS.getArticles("http://lab.ogre.be/salutpublic/archive", "archive", function(archives, section){
+			var _section = OGRE.GUI.createSection(section);
+			_section.addEventListener("requestarticle", function(event){
+				this.initArticle(event.detail, function(){
+					var t = this.scrollLeft;
+					this.scrollLeft+=500;
+					if(t == this.scrollLeft){
+						this.scrollLeft = 0;
+					}
+					return false;
+				}).loadElements();
+			}, false);
+			
+			OGRE.DATA.archive = new OGRE.TOOLS.Iterator(archives);
+			_section.dispatchRequestArticle(OGRE.DATA.archive);
 
 			var smartloader = function(){
-				var section = OGRE.GUI.articles.current.section;
-				if(OGRE.GUI.articles.hasNext() && 200 > section.scrollHeight - section.scrollTop - section.offsetHeight){
-					OGRE.GUI.articles.next().current.load();
-				}
+				while(OGRE.DATA.archive.hasNext() && 200 > _section.scrollHeight - _section.scrollTop - _section.offsetHeight){
+					_section.dispatchRequestArticle(OGRE.DATA.archive.next());
+				};
 			};
+			smartloader();
 
-			var rawload = function(){
-				var current = OGRE.GUI.articles.current;
-				var section = OGRE.GUI.articles.current.section;
-				current.load()
-				if(OGRE.GUI.articles.hasNext() && 200 > section.scrollHeight - section.scrollTop - section.offsetHeight){
-					setTimeout(function(){
-						OGRE.GUI.articles.next();
-						rawload();	
-					}, 50);
-				}
+			_section.addEventListener("scroll", smartloader, false);
+			window.addEventListener("resize", smartloader, false);
+		});
+
+
+		OGRE.TOOLS.getArticles("http://lab.ogre.be/salutpublic/home", "home", function(homes, section){
+			var _section = OGRE.GUI.createSection(section);
+			_section.addEventListener("requestarticle", function(event){
+				this.initArticle(event.detail, function(){
+					transition(this.getAttribute("href"));
+				});
+			}, false);
+			
+			OGRE.DATA.home = new OGRE.TOOLS.Iterator(homes);
+			_section.dispatchRequestArticle(OGRE.DATA.home);
+
+			var smartloader = function(){
+				while(OGRE.DATA.home.hasNext() && 200 > _section.scrollHeight - _section.scrollTop - _section.offsetHeight){
+					_section.dispatchRequestArticle(OGRE.DATA.home.next());
+				};
 			};
-			rawload();
-			OGRE.GUI.articles.current.section.addEventListener("scroll", smartloader, false);
+			smartloader();
+
+			_section.addEventListener("scroll", smartloader, false);
 			window.addEventListener("resize", smartloader, false);
 		});
 
