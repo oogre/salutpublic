@@ -207,7 +207,8 @@
 			OGRE.TOOLS.getArticles("http://lab.ogre.be/salutpublic/archive", "archive", function(archives, section){
 				var _section = OGRE.GUI.createSection(section);
 				_section.addEventListener("requestarticle", function(event){
-					this.initArticle(event.detail, function(){
+					this.initArticle(event.detail, function(event){
+						event.preventDefault();
 						var t = this.scrollLeft;
 						this.scrollLeft+=500;
 						if(t == this.scrollLeft){
