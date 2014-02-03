@@ -12,22 +12,22 @@ body{
 /* ANIMATION */
 	.smooth{
 		transition-property: all;
-		transition-duration: 1.2s;
+		transition-duration: 10.2s;
 		transition-timing-function: linear;
 		transition-delay: initial;
 
 		-webkit-transition-property: all;
-		-webkit-transition-duration: 1.2s;
+		-webkit-transition-duration: 10.2s;
 		-webkit-transition-timing-function: linear;
 		-webkit-transition-delay: initial;
 
 		-moz-transition-property: all;
-		-moz-transition-duration: 1.2s;
+		-moz-transition-duration: 10.2s;
 		-moz-transition-timing-function: linear;
 		-moz-transition-delay: initial;
 
 		-o-transition-property: all;
-		-o-transition-duration: 1.2s;
+		-o-transition-duration: 10.2s;
 		-o-transition-timing-function: linear;
 		-o-transition-delay: initial;
 	}
@@ -36,6 +36,7 @@ body{
 	.current, .out{
 		padding: 20px 30px;
 		position: absolute;
+		left: 0;
 	}
 /* CURRENT */
 
